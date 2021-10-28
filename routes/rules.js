@@ -4,26 +4,6 @@ var needle = require("needle");
 
 var rulesURL = "https://api.twitter.com/2/tweets/search/stream/rules";
 
-function getRules(req, res) {
-  const connection = needle.get(rulesURL, {
-    headers: {
-      Authorization: `Bearer ${process.env.TWITTER_BEARER_TOKEN}`,
-    },
-    timeout: 20000,
-  });
-
-  connection
-    .on("data", (data) => {
-      var jsonString = JSON.stringify(data);
-      res.status(200).render("rules", { data: jsonString });
-    })
-    .on("err", (err) => {
-      console.log(err);
-    });
-
-  return connection;
-}
-
 router.get("/", (req, res) => {
   const query = req.query;
 
@@ -37,13 +17,7 @@ router.get("/", (req, res) => {
       console.log(ids);
       // Post the id's of the rules that need to be deleted
       needle.post("localhost:3000/rules/deleterules", {
-        headers: {
-          Authorization: `Bearer ${process.env.TWITTER_BEARER_TOKEN}`,
-        },
-        body: {
-          data: "hello",
-        },
-        timeout: 20000,
+        body: "hi",
       });
     });
   }
@@ -51,6 +25,7 @@ router.get("/", (req, res) => {
   needle
     .get("localhost:3000/rules/getRules")
     .on("data", (data) => {
+      console.log(data);
       var jsonString = JSON.stringify(data);
       res.status(200).render("rules", { data: jsonString });
     })

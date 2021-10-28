@@ -8,7 +8,6 @@ var app = require("../app");
 var debug = require("debug")("a2:server");
 var http = require("http");
 var WebSocket = require("ws");
-var needle = require("needle");
 
 /**
  * Get port from environment and store in Express.

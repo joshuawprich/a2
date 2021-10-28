@@ -21,11 +21,13 @@ async function getStream() {
   // Clear the current tweet stream
   tweetStream.innerHTML = "";
 
-  var href = "ws://" + window.location.hostname + ":3000/stream";
+  var href = "ws://192.168.0.125:8080/";
 
   const socket = new WebSocket(href);
 
-  await fetch("/stream")
+  await fetch("http://192.168.0.125:8080/", {
+    headers: { "Access-Control-Allow-Origin": "*" },
+  })
     .then((res) => {
       if (res.status == 200) {
         console.log(res.status);
