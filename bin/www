@@ -41,12 +41,16 @@ var server = http.createServer(app);
  */
 const wss = new WebSocket.Server({ server: server });
 
+var num = 0;
+
 wss.on("connection", (ws) => {
   console.log("connected to back end");
   ws.on("message", (msg) => {
     var tweet = JSON.parse(msg);
     tweet = analyzeTweet(tweet);
     ws.send(JSON.stringify(tweet));
+    num += 1;
+    console.log(num);
   });
 });
 

@@ -3,7 +3,7 @@ const tweetStream = document.getElementById("tweetStream");
 function createTweet(tweet) {
   let tweetJson = JSON.parse(tweet);
   var HTML =
-    "<div>" +
+    "<div id=tweetBox>" +
     "<p>Text: " +
     tweetJson.text +
     "</p>" +

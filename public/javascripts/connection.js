@@ -1,3 +1,4 @@
+//var href = "ws://" + window.location.hostname + ":3000";
 var AnalyzeHREF = "ws://192.168.0.125:3000/";
 const analyzeSocket = new WebSocket(AnalyzeHREF);
 

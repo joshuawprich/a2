@@ -2,6 +2,8 @@ extends layout
 
 block content
   h1= title
-  button(id="streamBtn" value="hey")
+  div(id="buttonGroup")
+    button(id="streamBtn")="Stream Tweets"
+    button(id="rulesBtn")="Rules"
   div(id='tweetStream')
   script(type="module" src='/javascripts/streamTweets.js')
