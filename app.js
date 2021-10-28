@@ -10,7 +10,6 @@ require("dotenv").config();
 var app = express();
 
 var indexRouter = require("./routes/index");
-var stream = require("./routes/stream");
 var rules = require("./routes/rules");
 
 // view engine setup
@@ -26,7 +25,6 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
 
 app.use("/", indexRouter);
-app.use("/stream", stream);
 app.use("/rules", rules);
 
 // catch 404 and forward to error handler
