@@ -1,0 +1,19 @@
+extends layout
+
+block content
+    h1="Rules"
+    h2="Current Rules"
+    div(id="navigation")
+        button(id='stream')="Stream"
+    div(id='editRules')
+        div(id='addRule')
+            input()
+            button(id='addBtn')="Add Rule"
+        div(id='deleteRules')
+            input()
+            button(id='deleteRuleBtn')="Delete"
+            button(id='deleteAllBtn')="Delete All"
+    div(id='rulesTable')
+    script var data = !{data}
+    script(src=('/javascripts/rulesTable.js'))
+    script(src=('/javascripts/deleteRules.js'))
