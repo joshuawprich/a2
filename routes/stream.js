@@ -25,7 +25,7 @@ function sendData(data, wss) {
 }
 
 // URL for connecting to the twitter stream.
-const streamUrl = "https://api.twitter.com/2/tweets/sample/stream";
+const streamUrl = "https://api.twitter.com/2/tweets/search/stream";
 
 /**
  * Function for connecting the the twitter stream.

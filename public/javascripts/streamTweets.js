@@ -21,7 +21,9 @@ async function getStream() {
   // Clear the current tweet stream
   tweetStream.innerHTML = "";
 
-  const socket = new WebSocket("ws://192.168.0.125:3000/stream");
+  var href = "ws://" + window.location.hostname + ":3000/stream";
+
+  const socket = new WebSocket(href);
 
   await fetch("/stream")
     .then((res) => {
