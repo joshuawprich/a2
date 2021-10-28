@@ -9,6 +9,19 @@ var debug = require("debug")("a2:server");
 var http = require("http");
 var WebSocket = require("ws");
 
+const Analyzer = require("natural").SentimentAnalyzer;
+const stemmer = require("natural").PorterStemmer;
+
+function analyzeTweet(tweet) {
+  // Create a new Analyser
+  var analyzer = new Analyzer("English", stemmer, "afinn");
+  // Grab text from JSON and split into and array
+  var textArray = tweet.text.split(" ");
+  var sentiment = analyzer.getSentiment(textArray);
+  tweet.sentiment = sentiment;
+  return tweet;
+}
+
 /**
  * Get port from environment and store in Express.
  */
@@ -28,10 +41,13 @@ var server = http.createServer(app);
  */
 const wss = new WebSocket.Server({ server: server });
 
-app.wss = wss;
-
 wss.on("connection", (ws) => {
-  console.log("connected");
+  console.log("connected to back end");
+  ws.on("message", (msg) => {
+    var tweet = JSON.parse(msg);
+    tweet = analyzeTweet(tweet);
+    ws.send(JSON.stringify(tweet));
+  });
 });
 
 /**
