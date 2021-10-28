@@ -30,6 +30,10 @@ const wss = new WebSocket.Server({ server: server });
 
 app.wss = wss;
 
+wss.on("connection", (ws) => {
+  console.log("connected");
+});
+
 /**
  * Listen on provided port, on all network interfaces.
  */

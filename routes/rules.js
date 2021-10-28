@@ -55,6 +55,10 @@ router.post("/postrules", (req, res) => {
   //Do nothing yet
 });
 
+router.get("/hey", (req, res) => {
+  res.send("hey");
+});
+
 router.post("/deleterules", (req, res) => {
   console.log(req.body);
   needle
