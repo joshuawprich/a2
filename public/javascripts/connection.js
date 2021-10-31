@@ -1,7 +1,11 @@
-//var href = "ws://" + window.location.hostname + ":3000";
-var AnalyzeHREF = "ws://192.168.0.125:3000/";
+/**
+ * Sets up a socket connection to the back end server.
+ * This is used later to analyse the sentiment of tweets.
+ */
+var AnalyzeHREF = `ws://${window.location.hostname}:3000/`;
 const analyzeSocket = new WebSocket(AnalyzeHREF);
 
+// Listen for a connection
 analyzeSocket.addEventListener("open", (event) => {
   console.log("Connected Sentiment Processor");
 });

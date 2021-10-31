@@ -50,7 +50,8 @@ wss.on("connection", (ws) => {
     tweet = analyzeTweet(tweet);
     ws.send(JSON.stringify(tweet));
     num += 1;
-    console.log(num);
+    // Count the number of tweets.
+    //console.log(num);
   });
 });
 

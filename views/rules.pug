@@ -4,16 +4,17 @@ block content
     h1="Rules"
     h2="Current Rules"
     div(id="navigation")
-        button(id='stream')="Stream"
+        button(id='goToStream')="Return To Stream"
     div(id='editRules')
         div(id='addRule')
-            input()
-            button(id='addBtn')="Add Rule"
+            input(id='rule' placeholder='New Rule' autocomplete="off")
+            input(id='tag' placeholder='Rule Tag' autocomplete="off")
+            button(id='addRuleBtn')="Add Rule"
         div(id='deleteRules')
-            input()
+            input(id='delTag' placeholder="ID to Delete" autocomplete="off")
             button(id='deleteRuleBtn')="Delete"
-            button(id='deleteAllBtn')="Delete All"
+    div(id='message')
     div(id='rulesTable')
     script var data = !{data}
     script(src=('/javascripts/rulesTable.js'))
-    script(src=('/javascripts/deleteRules.js'))
+    script(src='/javascripts/rulesButtons.js')

@@ -8,8 +8,14 @@ a {
 }
 
 button {
-  height: 24px;
+  height: 48px;
   width: 72px;
+  margin: 2px;
+}
+
+input {
+  height: 32px;
+  margin: 2px;
 }
 
 #tweetBox {

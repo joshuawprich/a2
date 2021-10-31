@@ -1,26 +1,28 @@
 var express = require("express");
 var router = express.Router();
 var needle = require("needle");
+var axios = require("axios");
 
+// Url for the twitter rules API.
 var rulesURL = "https://api.twitter.com/2/tweets/search/stream/rules";
+
+// Function for creating config for the axios requests.
+function createConfig(method, data) {
+  var config = {
+    method: method,
+    url: "https://api.twitter.com/2/tweets/search/stream/rules",
+    headers: {
+      Authorization: `Bearer ${process.env.TWITTER_BEARER_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    data: data,
+  };
+
+  return config;
+}
 
 router.get("/", (req, res) => {
   const query = req.query;
-
-  if (query.action == "delete") {
-    // Get the rules that need to be deleted
-    needle.get("localhost:3000/rules/getRules").on("data", (data) => {
-      var ids = [];
-      data.data.forEach((rule) => {
-        ids.push(rule.id);
-      });
-      console.log(ids);
-      // Post the id's of the rules that need to be deleted
-      needle.post("localhost:3000/rules/deleterules", {
-        body: "hi",
-      });
-    });
-  }
 
   needle
     .get("localhost:3000/rules/getRules")
@@ -51,22 +53,15 @@ router.get("/getrules", (req, res) => {
     });
 });
 
-router.post("/postrules", (req, res) => {
-  //Do nothing yet
-});
+// Create a new rule
+router.post("/edit_rules", (req, res) => {
+  var config = createConfig("post", req.body);
 
-router.get("/hey", (req, res) => {
-  res.send("hey");
-});
-
-router.post("/deleterules", (req, res) => {
-  console.log(req.body);
-  needle
-    .post(rulesURL, req.body)
-    .on("data", (data) => {
-      console.log(data);
+  axios(config)
+    .then((response) => {
+      res.status(200).send(JSON.stringify(response.data));
     })
-    .on("err", (err) => {
+    .catch((err) => {
       console.log(err);
     });
 });

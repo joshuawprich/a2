@@ -25,6 +25,9 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
 
 app.use("/", indexRouter);
+app.get("/env", (req, res) => {
+  res.status(200).send(process.env);
+});
 app.use("/rules", rules);
 
 // catch 404 and forward to error handler
