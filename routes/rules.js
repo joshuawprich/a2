@@ -1,10 +1,6 @@
 var express = require("express");
 var router = express.Router();
-var needle = require("needle");
 var axios = require("axios");
-
-// Url for the twitter rules API.
-var rulesURL = "https://api.twitter.com/2/tweets/search/stream/rules";
 
 // Function for creating config for the axios requests.
 function createConfig(method, data) {
@@ -23,10 +19,25 @@ function createConfig(method, data) {
 
 router.get("/", (req, res) => {
   var config = createConfig("get");
-  axios(config).then((response) => {
-    console.log(response.data.data);
-    res.status(200).render("rules", { data: JSON.stringify(response.data) });
-  });
+  axios(config)
+    .then((response) => {
+      console.log(response.data.data);
+      res.status(200).render("rules", { data: JSON.stringify(response.data) });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+router.get("/get_rules", (req, res) => {
+  var config = createConfig("get");
+  axios(config)
+    .then((response) => {
+      res.status(200).send(response.data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
 // Create a new rule
