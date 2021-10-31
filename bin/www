@@ -11,6 +11,7 @@ var WebSocket = require("ws");
 
 const Analyzer = require("natural").SentimentAnalyzer;
 const stemmer = require("natural").PorterStemmer;
+const redis = require("redis");
 
 function analyzeTweet(tweet) {
   // Create a new Analyser
@@ -41,6 +42,9 @@ var server = http.createServer(app);
  */
 const wss = new WebSocket.Server({ server: server });
 
+//
+const redisClient = redis.createClient();
+
 var num = 0;
 
 wss.on("connection", (ws) => {
@@ -48,10 +52,22 @@ wss.on("connection", (ws) => {
   ws.on("message", (msg) => {
     var tweet = JSON.parse(msg);
     tweet = analyzeTweet(tweet);
+    // Redis
+    const redisItems = []
+    redisItems.push(tweet.text);
+    redisItems.push(tweet.sentiment);
+    redisClient.rpush(tweet.id, redisItems, (err, reply) => {
+      if (err) throw err;
+        console.log(reply);
+
+        redisClient.get(tweet.id, (err, reply) => {
+          console.log(reply);
+        });
+    });
+    console.log(tweet.id);
     ws.send(JSON.stringify(tweet));
     num += 1;
-    // Count the number of tweets.
-    //console.log(num);
+    console.log(num);
   });
 });
 
