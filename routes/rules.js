@@ -22,35 +22,11 @@ function createConfig(method, data) {
 }
 
 router.get("/", (req, res) => {
-  const query = req.query;
-
-  needle
-    .get("localhost:3000/rules/getRules")
-    .on("data", (data) => {
-      console.log(data);
-      var jsonString = JSON.stringify(data);
-      res.status(200).render("rules", { data: jsonString });
-    })
-    .on("err", (err) => {
-      console.log(err);
-      res.status(400).send(err);
-    });
-});
-
-router.get("/getrules", (req, res) => {
-  needle
-    .get(rulesURL, {
-      headers: {
-        Authorization: `Bearer ${process.env.TWITTER_BEARER_TOKEN}`,
-      },
-      timeout: 20000,
-    })
-    .on("data", (data) => {
-      res.status(200).send(data);
-    })
-    .on("err", (err) => {
-      console.log(err);
-    });
+  var config = createConfig("get");
+  axios(config).then((response) => {
+    console.log(response.data.data);
+    res.status(200).render("rules", { data: JSON.stringify(response.data) });
+  });
 });
 
 // Create a new rule

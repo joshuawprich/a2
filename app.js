@@ -11,6 +11,7 @@ var app = express();
 
 var indexRouter = require("./routes/index");
 var rules = require("./routes/rules");
+var s3 = require("./routes/s3");
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -29,10 +30,21 @@ app.get("/env", (req, res) => {
   res.status(200).send(process.env);
 });
 app.use("/rules", rules);
+app.use("/s3", s3);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
+});
+
+//AWS credTest
+var AWS = require("aws-sdk");
+AWS.config.getCredentials((err) => {
+  if (err) console.log(err.stack);
+  else {
+    console.log("Access key: ", AWS.config.credentials.accessKeyId);
+    console.log("Secret Access key: ", AWS.config.credentials.secretAccessKey);
+  }
 });
 
 // error handler
