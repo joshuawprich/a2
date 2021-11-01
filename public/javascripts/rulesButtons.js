@@ -39,6 +39,7 @@ async function createRule() {
   // Retrieve the data from the response.
   var data = await response.json();
   // If the rule was created successfully reload the page.
+  console.log(data.meta);
   if (data.meta.summary.created) {
     window.location.reload();
   } else {

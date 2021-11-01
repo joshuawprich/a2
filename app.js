@@ -11,6 +11,7 @@ var app = express();
 
 var indexRouter = require("./routes/index");
 var rules = require("./routes/rules");
+var redis = require("./routes/redis");
 var s3 = require("./routes/s3");
 
 // view engine setup
@@ -30,6 +31,7 @@ app.get("/env", (req, res) => {
   res.status(200).send(process.env);
 });
 app.use("/rules", rules);
+app.use("/redis", redis);
 app.use("/s3", s3);
 
 // catch 404 and forward to error handler

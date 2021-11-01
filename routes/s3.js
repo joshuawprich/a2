@@ -21,7 +21,6 @@ function createConfig(method, url, data) {
 
 // Store data in S3
 async function storeData(data) {
-  console.log("store");
   var config = createConfig(
     "get",
     "https://api.twitter.com/2/tweets/search/stream/rules"
@@ -52,8 +51,6 @@ async function storeData(data) {
   if (tweetArray.message == "Not Found") {
     tweetArray = [];
   }
-
-  console.log(tweetArray);
 
   tweetArray.push(JSON.stringify(data)); // Push the new tweet to the tweet json object
 
@@ -88,7 +85,6 @@ router.get("/get_data", (req, res) => {
   new AWS.S3({ apiVersion: "2006-03-01" }).getObject(params, (err, result) => {
     if (result) {
       var resultJSON = JSON.parse(result.Body);
-      console.log(resultJSON);
       res.status(200).send(resultJSON);
     } else {
       res.status(200).send({ message: "Not Found" });

@@ -60,6 +60,57 @@ async function getStream() {
   });
 }
 
+async function getRedisTweets() {
+  var maxTweets = document.getElementById("maxTweets").value;
+
+  console.log(maxTweets);
+
+  tweetStream.innerHTML = "";
+
+  var promise = await fetch(
+    "http://" + window.location.hostname + ":3000/rules/get_rules",
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  var data = await promise.json().then((data) => {
+    return data;
+  });
+  var query = data.data[0].value;
+
+  console.log(query);
+
+  var tweets = await fetch(
+    "http://" + window.location.hostname + ":3000/redis/get_data?key=" + query,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  var tweetArray = await tweets.json().then((data) => {
+    return data;
+  });
+
+  var index = 0;
+  if (maxTweets == 0) {
+    maxTweets = 5000001;
+  }
+  tweetArray.forEach((tweet) => {
+    tweet = JSON.stringify(tweet);
+    if (index < maxTweets) {
+      createTweet(tweet);
+      index += 1;
+    }
+  });
+}
+
 async function getS3Tweets() {
   var maxTweets = document.getElementById("maxTweets").value;
 
@@ -96,8 +147,14 @@ async function getS3Tweets() {
     return data;
   });
 
+  console.log(tweetArray);
+
   var index = 0;
+  if (maxTweets == 0) {
+    maxTweets = 5000001;
+  }
   tweetArray.forEach((tweet) => {
+    console.log(tweet);
     if (index < maxTweets) {
       createTweet(tweet);
       index += 1;
@@ -109,6 +166,10 @@ document.getElementById("streamBtn").onclick = getStream;
 // S
 document.getElementById("goToRules").onclick = () => {
   location.href = "http://" + window.location.hostname + ":3000/rules";
+};
+
+document.getElementById("Redis").onclick = () => {
+  getRedisTweets();
 };
 
 document.getElementById("S3").onclick = () => {

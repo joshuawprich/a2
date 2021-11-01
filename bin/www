@@ -47,6 +47,8 @@ const wss = new WebSocket.Server({ server: server });
 //
 const redisClient = redis.createClient();
 
+app.redisClient = redisClient;
+
 var num = 0;
 
 wss.on("connection", (ws) => {
@@ -56,32 +58,17 @@ wss.on("connection", (ws) => {
     var tweet = JSON.parse(msg);
     tweet = analyzeTweet(tweet);
     // Redis
-    axios({
-      method: "get",
-      url: "http://localhost:3000/rules/get_rules",
-    })
-      .then((res) => {
-        console.log(res.data.data[0].value);
-        redisClient.rpush(res.data.data[0].value, tweet.id, (err, reply) => {
-          if (err) throw err;
-          console.log(reply);
-
-          redisClient.get(res.data.data[0].value, (err, reply) => {
-            console.log(reply);
-          });
-        });
-        const redisItems = [];
-        redisItems.push(tweet.text);
-        redisItems.push(tweet.sentiment);
-        redisClient.rpush(tweet.id, redisItems, (err, reply) => {
-          if (err) throw err;
-          console.log(reply);
-
-          redisClient.get(tweet.id, (err, reply) => {
-            console.log(reply);
-          });
-        });
-        console.log(tweet.id);
+    var config = {
+      method: "post",
+      url: "http://localhost:3000/redis/store",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: JSON.stringify(tweet),
+    };
+    axios(config)
+      .then((response) => {
+        console.log(response);
       })
       .catch((err) => {
         console.log(err);
@@ -102,6 +89,7 @@ wss.on("connection", (ws) => {
       .catch((err) => {
         console.log(err);
       });
+    // End of s3
 
     ws.send(JSON.stringify(tweet));
     num += 1;

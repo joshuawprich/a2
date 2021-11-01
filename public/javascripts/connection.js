@@ -10,19 +10,19 @@ analyzeSocket.addEventListener("open", (event) => {
   console.log("Connected Sentiment Processor");
 });
 var data = {
-  Text: "POOOOOOOOOOOp",
+  Text: "This is not a test",
   id: 1454968925798807656,
   sentiment: 0,
 };
 
-// fetch("http://192.168.0.125:3000/s3/get_data?key=cat has: images", {
+// fetch("http://192.168.0.125:3000/redis/get_data?key=testing", {
 //   method: "GET",
 //   headers: {
 //     "Content-Type": "application/json",
 //   },
 // });
 
-// fetch("http://192.168.0.125:3000/s3/store", {
+// fetch("http://192.168.0.125:3000/redis/store", {
 //   method: "POST",
 //   headers: {
 //     "Content-Type": "application/json",
