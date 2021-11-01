@@ -60,8 +60,57 @@ async function getStream() {
   });
 }
 
+async function getS3Tweets() {
+  var maxTweets = document.getElementById("maxTweets").value;
+
+  tweetStream.innerHTML = "";
+
+  console.log(maxTweets);
+
+  var promise = await fetch(
+    "http://" + window.location.hostname + ":3000/rules/get_rules",
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  var data = await promise.json().then((data) => {
+    return data;
+  });
+  var query = data.data[0].value;
+
+  var tweets = await fetch(
+    "http://" + window.location.hostname + ":3000/s3/get_data?key=" + query,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  var tweetArray = await tweets.json().then((data) => {
+    return data;
+  });
+
+  var index = 0;
+  tweetArray.forEach((tweet) => {
+    if (index < maxTweets) {
+      createTweet(tweet);
+      index += 1;
+    }
+  });
+}
+
 document.getElementById("streamBtn").onclick = getStream;
 // S
 document.getElementById("goToRules").onclick = () => {
   location.href = "http://" + window.location.hostname + ":3000/rules";
+};
+
+document.getElementById("S3").onclick = () => {
+  getS3Tweets();
 };

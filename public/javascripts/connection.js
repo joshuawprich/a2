@@ -15,12 +15,12 @@ var data = {
   sentiment: 0,
 };
 
-fetch("http://192.168.0.125:3000/s3/get_data?key=cat has: images", {
-  method: "GET",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
+// fetch("http://192.168.0.125:3000/s3/get_data?key=cat has: images", {
+//   method: "GET",
+//   headers: {
+//     "Content-Type": "application/json",
+//   },
+// });
 
 // fetch("http://192.168.0.125:3000/s3/store", {
 //   method: "POST",

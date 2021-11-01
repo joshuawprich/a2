@@ -3,8 +3,11 @@ extends layout
 block content
   h1= title
   div(id="buttonGroup")
-    button(id="streamBtn")="Stream Tweets"
-    button(id="stopStream")="Stop Stream"
+    button(id="streamBtn")="Twitter Stream"
+    button(id="Redis")="Redis Stream"
+    button(id="S3")="S3 Stream"
     button(id="goToRules")="Rules"
+  div()
+    input(id="maxTweets" placeholder="Max Tweets")
   div(id='tweetStream')
   script(type="module" src='/javascripts/streamTweets.js')

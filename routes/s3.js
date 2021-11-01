@@ -21,6 +21,7 @@ function createConfig(method, url, data) {
 
 // Store data in S3
 async function storeData(data) {
+  console.log("store");
   var config = createConfig(
     "get",
     "https://api.twitter.com/2/tweets/search/stream/rules"
@@ -35,7 +36,7 @@ async function storeData(data) {
       console.log(err);
     });
 
-  var url = process.env.SERVER_IP + "/s3/get_data?key=" + query;
+  var url = "http://localhost:3000/s3/get_data?key=" + query;
 
   var config = createConfig("get", url);
 
