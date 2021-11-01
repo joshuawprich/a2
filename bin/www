@@ -4,135 +4,157 @@
  * Module dependencies.
  */
 
-var app = require("../app");
-var debug = require("debug")("a2:server");
-var http = require("http");
-var WebSocket = require("ws");
+ var app = require("../app");
+ var debug = require("debug")("a2:server");
+ var http = require("http");
+ var WebSocket = require("ws");
 
-const Analyzer = require("natural").SentimentAnalyzer;
-const stemmer = require("natural").PorterStemmer;
-const redis = require("redis");
+ const Analyzer = require("natural").SentimentAnalyzer;
+ const stemmer = require("natural").PorterStemmer;
 
-function analyzeTweet(tweet) {
-  // Create a new Analyser
-  var analyzer = new Analyzer("English", stemmer, "afinn");
-  // Grab text from JSON and split into and array
-  var textArray = tweet.text.split(" ");
-  var sentiment = analyzer.getSentiment(textArray);
-  tweet.sentiment = sentiment;
-  return tweet;
-}
+ const axios = require("axios");
+ const redis = require("redis");
 
-/**
- * Get port from environment and store in Express.
- */
+ function analyzeTweet(tweet) {
+   // Create a new Analyser
+   var analyzer = new Analyzer("English", stemmer, "afinn");
+   // Grab text from JSON and split into and array
+   var textArray = tweet.text.split(" ");
+   var sentiment = analyzer.getSentiment(textArray);
+   tweet.sentiment = sentiment;
+   return tweet;
+ }
 
-var port = normalizePort(process.env.PORT || "3000");
-app.set("port", port);
+ /**
+  * Get port from environment and store in Express.
+  */
 
-/**
- * Create HTTP server.
- */
+ var port = normalizePort(process.env.PORT || "3000");
+ app.set("port", port);
 
-var server = http.createServer(app);
+ /**
+  * Create HTTP server.
+  */
 
-/**
- * Create WebSocket Server and connect to express server.
- * Bind wss to the applicaiton.
- */
-const wss = new WebSocket.Server({ server: server });
+ var server = http.createServer(app);
 
-//
-const redisClient = redis.createClient();
+ /**
+  * Create WebSocket Server and connect to express server.
+  * Bind wss to the applicaiton.
+  */
+ const wss = new WebSocket.Server({ server: server });
 
-var num = 0;
+ //
+ const redisClient = redis.createClient();
 
-wss.on("connection", (ws) => {
-  console.log("connected to back end");
-  ws.on("message", (msg) => {
-    var tweet = JSON.parse(msg);
-    tweet = analyzeTweet(tweet);
-    // Redis
-    const redisItems = []
-    redisItems.push(tweet.text);
-    redisItems.push(tweet.sentiment);
-    redisClient.rpush(tweet.id, redisItems, (err, reply) => {
-      if (err) throw err;
-        console.log(reply);
+ var num = 0;
 
-        redisClient.get(tweet.id, (err, reply) => {
-          console.log(reply);
+ wss.on("connection", (ws) => {
+   console.log("connected to back end");
+
+   ws.on("message", (msg) => {
+     var tweet = JSON.parse(msg);
+     tweet = analyzeTweet(tweet);
+     // Redis
+     axios({
+        method: 'get',
+        url: 'http://localhost:3000/rules/get_rules'
+       })
+       .then((res) => {
+        console.log(res.data.data[0].value);
+        redisClient.rpush(res.data.data[0].value, tweet.id, (err, reply) => {
+            if (err) throw err;
+            console.log(reply);
+
+            redisClient.get(res.data.data[0].value, (err, reply) => {
+                console.log(reply);
+            })
+        })
+        const redisItems = []
+        redisItems.push(tweet.text);
+        redisItems.push(tweet.sentiment);
+        redisClient.rpush(tweet.id, redisItems, (err, reply) => {
+          if (err) throw err;
+            console.log(reply);
+   
+            redisClient.get(tweet.id, (err, reply) => {
+              console.log(reply);
+            });
         });
-    });
-    console.log(tweet.id);
-    ws.send(JSON.stringify(tweet));
-    num += 1;
-    console.log(num);
-  });
-});
+        console.log(tweet.id);
+       })
+       .catch((err) => {
+           console.log(err);
+      })
 
-/**
- * Listen on provided port, on all network interfaces.
- */
+     ws.send(JSON.stringify(tweet));
+     num += 1;
+     console.log(num);
+   });
+ });
 
-server.listen(port);
-server.on("error", onError);
-server.on("listening", onListening);
+ /**
+  * Listen on provided port, on all network interfaces.
+  */
 
-/**
- * Normalize a port into a number, string, or false.
- */
+ server.listen(port);
+ server.on("error", onError);
+ server.on("listening", onListening);
 
-function normalizePort(val) {
-  var port = parseInt(val, 10);
+ /**
+  * Normalize a port into a number, string, or false.
+  */
 
-  if (isNaN(port)) {
-    // named pipe
-    return val;
-  }
+ function normalizePort(val) {
+   var port = parseInt(val, 10);
 
-  if (port >= 0) {
-    // port number
-    return port;
-  }
+   if (isNaN(port)) {
+     // named pipe
+     return val;
+   }
 
-  return false;
-}
+   if (port >= 0) {
+     // port number
+     return port;
+   }
 
-/**
- * Event listener for HTTP server "error" event.
- */
+   return false;
+ }
 
-function onError(error) {
-  if (error.syscall !== "listen") {
-    throw error;
-  }
+ /**
+  * Event listener for HTTP server "error" event.
+  */
 
-  var bind = typeof port === "string" ? "Pipe " + port : "Port " + port;
+ function onError(error) {
+   if (error.syscall !== "listen") {
+     throw error;
+   }
 
-  // handle specific listen errors with friendly messages
-  switch (error.code) {
-    case "EACCES":
-      console.error(bind + " requires elevated privileges");
-      process.exit(1);
-      break;
-    case "EADDRINUSE":
-      console.error(bind + " is already in use");
-      process.exit(1);
-      break;
-    default:
-      throw error;
-  }
-}
+   var bind = typeof port === "string" ? "Pipe " + port : "Port " + port;
 
-/**
- * Event listener for HTTP server "listening" event.
- */
+   // handle specific listen errors with friendly messages
+   switch (error.code) {
+     case "EACCES":
+       console.error(bind + " requires elevated privileges");
+       process.exit(1);
+       break;
+     case "EADDRINUSE":
+       console.error(bind + " is already in use");
+       process.exit(1);
+       break;
+     default:
+       throw error;
+   }
+ }
 
-function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
-  debug("Listening on " + bind);
-}
+ /**
+  * Event listener for HTTP server "listening" event.
+  */
 
-module.exports = wss;
+ function onListening() {
+   var addr = server.address();
+   var bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
+   debug("Listening on " + bind);
+ }
+
+ module.exports = wss;
