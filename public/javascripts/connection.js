@@ -2,7 +2,7 @@
  * Sets up a socket connection to the back end server.
  * This is used later to analyse the sentiment of tweets.
  */
-var AnalyzeHREF = `ws://${window.location.hostname}:3000/`;
+var AnalyzeHREF = window.location.origin;
 const analyzeSocket = new WebSocket(AnalyzeHREF);
 
 // Listen for a connection
@@ -14,25 +14,3 @@ var data = {
   id: 1454968925798807656,
   sentiment: 0,
 };
-
-// fetch("http://192.168.0.125:3000/redis/get_data?key=testing", {
-//   method: "GET",
-//   headers: {
-//     "Content-Type": "application/json",
-//   },
-// });
-
-// fetch("http://192.168.0.125:3000/redis/store", {
-//   method: "POST",
-//   headers: {
-//     "Content-Type": "application/json",
-//   },
-//   body: JSON.stringify(data),
-// });
-
-// fetch("http://192.168.0.125:3000/s3/all_tweets", {
-//   method: "GET",
-//   headers: {
-//     "Content-Type": "application/json",
-//   },
-// });

@@ -32,7 +32,7 @@ async function getStream() {
   tweetStream.innerHTML = "";
 
   // Url of the server, retrieve the env variables
-  var url = "http://" + window.location.hostname + ":3000/env";
+  var url = window.location.origin;
   const response = await fetch(url);
   const envData = await response.json();
 
@@ -67,15 +67,12 @@ async function getRedisTweets() {
 
   tweetStream.innerHTML = "";
 
-  var promise = await fetch(
-    "http://" + window.location.hostname + ":3000/rules/get_rules",
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  var promise = await fetch(window.location.origin + "/rules/get_rules", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 
   var data = await promise.json().then((data) => {
     return data;
@@ -85,7 +82,7 @@ async function getRedisTweets() {
   console.log(query);
 
   var tweets = await fetch(
-    "http://" + window.location.hostname + ":3000/redis/get_data?key=" + query,
+    window.location.origin + "/redis/get_data?key=" + query,
     {
       method: "GET",
       headers: {
@@ -118,15 +115,12 @@ async function getS3Tweets() {
 
   console.log(maxTweets);
 
-  var promise = await fetch(
-    "http://" + window.location.hostname + ":3000/rules/get_rules",
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  var promise = await fetch(window.location.origin + "/rules/get_rules", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 
   var data = await promise.json().then((data) => {
     return data;
@@ -134,7 +128,7 @@ async function getS3Tweets() {
   var query = data.data[0].value;
 
   var tweets = await fetch(
-    "http://" + window.location.hostname + ":3000/s3/get_data?key=" + query,
+    window.location.origin + "/s3/get_data?key=" + query,
     {
       method: "GET",
       headers: {
@@ -165,7 +159,7 @@ async function getS3Tweets() {
 document.getElementById("streamBtn").onclick = getStream;
 // S
 document.getElementById("goToRules").onclick = () => {
-  location.href = "http://" + window.location.hostname + ":3000/rules";
+  location.href = window.location.origin + "/rules";
 };
 
 document.getElementById("Redis").onclick = () => {

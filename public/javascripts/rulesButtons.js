@@ -6,11 +6,11 @@
 
 // Go to the stream page from the rules page.
 document.getElementById("goToStream").onclick = () => {
-  location.href = "http://" + window.location.hostname + ":3000/";
+  location.href = window.location.origin;
 };
 
 // Url end point for editing rules.
-var url = "http://" + window.location.hostname + ":3000/rules/edit_rules";
+var url = window.location.origin + "/rules/edit_rules";
 
 // Updates error messages.
 function updateMessage(message) {
