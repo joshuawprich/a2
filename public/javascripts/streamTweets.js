@@ -32,7 +32,7 @@ async function getStream() {
   tweetStream.innerHTML = "";
 
   // Url of the server, retrieve the env variables
-  var url = window.location.origin;
+  var url = window.location.origin + "/env";
   const response = await fetch(url);
   const envData = await response.json();
 
