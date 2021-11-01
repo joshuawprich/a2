@@ -2,7 +2,7 @@
  * Sets up a socket connection to the back end server.
  * This is used later to analyse the sentiment of tweets.
  */
-var AnalyzeHREF = window.location.origin;
+var AnalyzeHREF = "ws://" + window.location.host;
 const analyzeSocket = new WebSocket(AnalyzeHREF);
 
 // Listen for a connection
