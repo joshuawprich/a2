@@ -1,4 +1,4 @@
-# a2
+# Twitter
 
 This assingment combines twitter tweets with sentiment analysis.
 
